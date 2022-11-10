@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+package ru.vsk.api.agreementwh.service;
+
+option java_multiple_files = true;
+
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+
+import "ru/vsk/api/agreementwh/dto/common/Error.proto";
+import "ru/vsk/api/agreementwh/dto/common/Status.proto";
+
+import "ru/vsk/api/agreementwh/dto/AgreementDataSchema.proto";
+import "ru/vsk/api/agreementwh/dto/AgreementDate.proto";
+import "ru/vsk/api/agreementwh/dto/AgreementDocuments.proto";
+import "ru/vsk/api/agreementwh/dto/AgreementStatus.proto";
+import "ru/vsk/api/agreementwh/dto/InsuranceProgram.proto";
+import "ru/vsk/api/agreementwh/dto/PaymentPlan.proto";
+import "ru/vsk/api/agreementwh/dto/ScanDoc.proto";
+import "ru/vsk/api/agreementwh/dto/TotalResults.proto";
+import "ru/vsk/api/agreementwh/dto/RequestType.proto";
+import "ru/vsk/api/agreementwh/dto/StructStringFormat.proto";
+import "ru/vsk/api/agreementwh/dto/ModificationCollection.proto";
+
+service AgreementService {
+
+  rpc CreateAgreement (CreateAgreementRequest) returns (AgreementResponse);
+
+  rpc ReadAgreement (ReadAgreementRequest) returns (ReadAgreementResponse);
+
+  rpc UpdateAgreement (UpdateAgreementRequest) returns (AgreementResponse);
+
+  rpc DeleteAgreement (DeleteAgreementRequest) returns (AgreementResponse);
+
+  rpc SetAgreementStatus (SetAgreementStatusRequest) returns (AgreementResponse);
+
+  rpc UploadAgreement (UploadAgreementRequest) returns (AgreementResponse);
+
+  rpc SaveInsuranceProgram (SaveInsuranceProgramRequest) returns (AgreementResponse);
+
+  rpc UpdateCustomConditions (UpdateCustomConditionsRequest) returns (AgreementResponse);
+
+  rpc SavePaymentPlan (SavePaymentPlanRequest) returns (AgreementResponse);
+
+  rpc SaveTotalResults (SaveTotalResultsRequest) returns (AgreementResponse);
+
+  rpc SavePaymentDateTime (SavePaymentDateTimeRequest) returns (AgreementResponse);
+
+  rpc SaveStartDateTime (SaveStartDateTimeRequest) returns (AgreementResponse);
+
+  rpc SaveEndDateTime (SaveEndDateTimeRequest) returns (AgreementResponse);
+
+  rpc SaveConclusionDateTime (SaveConclusionDateTimeRequest) returns (AgreementResponse);
+
+}
+
+message AgreementResponse {
+  string agreementId = 1;
+  dto.common.Status status = 2;
+  repeated dto.common.Error errors = 3;
+}
+
+message DeleteAgreementRequest {
+  string id = 1;
+}
+
+message CreateAgreementRequest {
+  string id = 1;
+  google.protobuf.Struct agreementData = 2;
+  string agreementNumber = 3;
+  string goldenClientId = 4;
+  repeated dto.ScanDoc scans = 5;
+  dto.AgreementDataSchema agreementDataSchema = 6;
+  string applicationNumber = 7;
+}
+
+message ReadAgreementRequest {
+  reserved 1;
+  bool needSchema = 2;
+  dto.StructStringFormat structStringFormat = 3;
+  dto.RequestType requestType = 4;
+  oneof requiredParameter {
+    string agreementNumber = 5;
+    string agreementId = 6;
+  }
+}
+
+message UpdateAgreementRequest {
+  string id = 1;
+  google.protobuf.Struct agreementData = 2;
+  string goldenClientId = 3;
+  repeated dto.ScanDoc scans = 4;
+  dto.AgreementDataSchema agreementDataSchema = 6;
+}
+
+message ReadAgreementResponse {
+  dto.common.Status status = 1;
+  string id = 2;
+  dto.AgreementDataSchema agreementDataSchema = 3;
+  reserved 4;
+  repeated dto.InsuranceProgram insurancePrograms = 5;
+  dto.TotalResults totalResults = 6;
+  dto.PaymentPlan paymentPlan = 7;
+  string agreementNumber = 8;
+  dto.AgreementStatusGrpc agreementStatus = 9;
+  dto.AgreementDate date = 10;
+  repeated dto.AgreementDocuments agreementDocuments = 11;
+  repeated dto.common.Error errors = 12;
+  google.protobuf.Struct dataSchema = 13;
+  repeated dto.ScanDoc scans = 14;
+  oneof agreementData {
+    string agreementDataAsString = 15;
+    google.protobuf.Struct agreementDataAsStruct = 16;
+  }
+  string applicationNumber = 17;
+  repeated dto.ModificationCollection modificationCollection = 18;
+}
+
+message SaveInsuranceProgramRequest {
+  string agreementId = 1;
+  repeated dto.InsuranceProgram insurancePrograms = 2;
+}
+
+message SetAgreementStatusRequest {
+  string agreementId = 1;
+  dto.AgreementStatusGrpc status = 2;
+}
+
+message UploadAgreementRequest {
+  string agreementId = 1;
+  bool finalElectronicFormAgreement = 2;
+  string fileId = 3;
+}
+
+message SavePaymentPlanRequest {
+  string agreementId = 1;
+  dto.PaymentPlan paymentPlan = 2;
+}
+
+message SaveTotalResultsRequest {
+  string agreementId = 1;
+  dto.TotalResults totalResults = 3;
+}
+
+message SavePaymentDateTimeRequest {
+  reserved 2;
+  string agreementId = 1;
+  google.protobuf.Timestamp paymentDateTime = 3;
+}
+
+message SaveStartDateTimeRequest {
+  string agreementId = 1;
+  google.protobuf.Timestamp startDateTime = 2;
+}
+
+message SaveEndDateTimeRequest {
+  string agreementId = 1;
+  google.protobuf.Timestamp endDateTime = 2;
+}
+
+message SaveConclusionDateTimeRequest {
+  string agreementId = 1;
+  google.protobuf.Timestamp ConclusionDateTime = 2;
+}
+
+message UpdateCustomConditionsRequest {
+  string agreementId = 1;
+  repeated dto.InsuranceProgram insurancePrograms = 2;
+}

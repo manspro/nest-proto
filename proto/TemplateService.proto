@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package ru.vsk.api.agreementwh.service;
+
+option java_multiple_files = true;
+
+import "ru/vsk/api/agreementwh/dto/common/Error.proto";
+import "ru/vsk/api/agreementwh/dto/common/Status.proto";
+
+service TemplateService {
+
+  rpc UploadTemplates(UploadTemplatesRequest) returns (UploadTemplatesResponse);
+
+  rpc UploadTemplatesByTechNameAndVersion(GetTemplateByTechNameAndVersionRequest) returns (UploadTemplatesResponse);
+
+  rpc GetTemplateByTechNameAndVersion(GetTemplateByTechNameAndVersionRequest) returns (GetTemplateByTechNameAndVersionResponse);
+
+}
+
+message UploadTemplatesRequest {}
+
+message GetTemplateByTechNameAndVersionRequest {
+  string techName = 1;
+  string version = 2;
+}
+
+message UploadTemplatesResponse {
+  dto.common.Status status = 1;
+  repeated dto.common.Error errors = 2;
+}
+
+message GetTemplateByTechNameAndVersionResponse {
+  string body = 1;
+  repeated dto.common.Error errors = 2;
+  dto.common.Status status = 3;
+}
